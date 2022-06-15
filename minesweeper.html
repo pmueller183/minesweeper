@@ -21,18 +21,19 @@
 		did_init_bomb -- I won't generate the bomb until after the user makes his first click
 			since there's nothing as irritating a hitting a bomb immediately.
 		has_bombs -- boolean matrix if a cell has a bomb or not.
-		cur_states, new_states -- matrix of current and new state values for each cell.
-			The plan is cur_states will be the values as seen by the user and the 
-			left and right click functions will update the new_states matrix.  The display
-			function will change the minefield matrix as needed and update cur_states to new_states.
+		cur_state, new_state -- matrix of current and new state values for each cell.
+			The plan is cur_state will be the values as seen by the user and the 
+			left and right click functions will update the new_state matrix.  The display
+			function will change the minefield matrix as needed and update cur_state to new_state.
 	*/
 	const docobj = document;
 	const num_rows_k = 10, num_cols_k = 10;
 	const init_num_bombs_k = 10;
 	let num_remaining_bombs = init_num_bombs_k;
+	let remaining_obj = {};
 
 	const state_one            =  1; // values for one through eight should match 
-	const state_two            =  2; // to make updating new_states a bit easier
+	const state_two            =  2; // to make updating new_state a bit easier
 	const state_three          =  3;
 	const state_four           =  4;
 	const state_five           =  5;
@@ -65,17 +66,23 @@
 	const minefield = [];
 	let did_init_bomb = false;
 	const has_bombs = [];
-	const cur_states = [];
-	const new_states = [];
+	const cur_state = [];
+	const new_state = [];
 
 	function left_func(row, col) // called on left mouse click
 	{
-		minefield[row][col].src = images[state_revealed_bomb];
+		if(state_flagged_bomb == cur_state[row][col])
+			++num_remaining_bombs;
+		new_state[row][col] = state_revealed_bomb;
+		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func
 	function right_func(row, col) // called on right mouse click
 	{
-		minefield[row][col].src = images[state_flagged_bomb];
+		if(state_flagged_bomb != cur_state[row][col])
+			--num_remaining_bombs;
+		new_state[row][col] = state_flagged_bomb;
+		display_minefield();
 		return false; // prevent the context menu from appearing
 	} // right_func
 
@@ -83,8 +90,7 @@
 	{
 		// the remaining bombs display
 
-		const remaining_obj = docobj.createElement("p");
-		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
+		remaining_obj = docobj.createElement("p");
 		docobj.body.appendChild(remaining_obj);
 
 		// the minefield:
@@ -111,7 +117,6 @@
 				img.style.top = `${cur_top}px`;
 				img.style.left = `${cur_left}px`;
 				img.style.width = `${cell_size_k}px`;
-				img.src = images[state_closed];
 				img.onclick = function() { return left_func(row, col); };
 				img.oncontextmenu = function() { return right_func(row, col);};
 				docobj.body.appendChild(img);
@@ -121,7 +126,41 @@
 			minefield.push(mine_row);
 			cur_top += cell_size_k;
 		} // for row
+
+		// set cur_state to undefined and new_stests to closed
+		// call display
+		for(let row=0; row < num_rows_k; ++row)
+		{
+			const cur_row = [];
+			const new_row = [];
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				cur_row[col] = undefined;
+				new_row[col] = state_closed;
+			} // by cols
+			cur_state.push(cur_row);
+			new_state.push(new_row);
+		} // by rows
+
+		display_minefield();
+
 	} // init()
+
+	function display_minefield()
+	{
+		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
+		for(let row=0; row < num_rows_k; ++row)
+		{
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				if(cur_state[row][col] != new_state[row][col])
+				{
+					minefield[row][col].src = images[new_state[row][col]];
+					cur_state[row][col] = new_state[row][col];
+				}
+			}
+		}
+	} // display_minefield
 
 	init();
 </script>
