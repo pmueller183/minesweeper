@@ -1,1 +1,3 @@
-# minsweeper
+minesweeper game for TriTech interview.
+
+

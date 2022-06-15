@@ -1,17 +1,57 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <None Include="README.md" />
+    <None Include="minesweeper.html" />
+    <None Include="Tritech Interview Exercise - Minesweeper.pdf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="assets">
+      <UniqueIdentifier>{a5ab5762-7abd-4e28-838c-640548c11994}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\closed.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\eight.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\exploded_bomb.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\five.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\flagged_bomb.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\four.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\incorrect_bomb.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\one.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\open.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\revealed_bomb.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\seven.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\six.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\three.png">
+      <Filter>assets</Filter>
+    </Image>
+    <Image Include="assets\two.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>
