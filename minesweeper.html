@@ -32,6 +32,7 @@
 	let num_remaining_bombs = init_num_bombs_k;
 	let remaining_obj = {};
 	let user_beg_date = undefined;
+	let my_timer = undefined;
 
 	const state_one            =  1; // values for one through eight should match 
 	const state_two            =  2; // to make updating new_state a bit easier
@@ -48,6 +49,10 @@
 	const state_flagged_bomb   = 13;
 	const state_exploded_bomb  = 14;
 	const state_shadow_bomb    = 15;
+
+	// game over states:
+	const game_lost = 1;
+	const game_won  = 2;
 
 	const images = [];
 	images[state_one] = "assets\\one.png";
@@ -72,9 +77,8 @@
 	const cur_state = [];
 	const new_state = [];
 
-	function format_date_diff()
+	function format_date_diff(cur_date)
 	{
-		let cur_date = new Date();
 		let diff_mlls = cur_date.getTime() - user_beg_date.getTime();
 		let diff_hours = Math.floor(diff_mlls / (60 * 60 * 1000));
 		diff_mlls -= (diff_hours * 60 * 60 * 1000);
@@ -94,7 +98,7 @@
 	function display_c()
 	{
 		let refresh = 250; // Refresh rate in milli seconds
-		setTimeout('display_ct()',refresh);
+		my_timer = setTimeout('display_ct()',refresh);
 	} // display_c
 
 	function display_ct() 
@@ -106,12 +110,12 @@
 		else
 		{
 			remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs +
-					" elapsed time: " + format_date_diff();
+					" elapsed time: " + format_date_diff(new Date());
 		}
 		display_c();
 	} // display_ct
 
-function random_int(min, max) 
+	function random_int(min, max) 
 	{
 		return Math.floor(Math.random() * (max - min) ) + min;
 	} // get_random_int
@@ -155,7 +159,14 @@ function random_int(min, max)
 		{
 			// do nothing
 			return false;
+		} // state_flagged_bomb
+
+		if(has_bombs[row][col])
+		{
+			game_over(game_lost);
+			return false;
 		}
+
 		new_state[row][col] = state_open;
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
@@ -247,7 +258,6 @@ function random_int(min, max)
 
 	function display_minefield()
 	{
-		//remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
 		for(let row=0; row < num_rows_k; ++row)
 		{
 			for(let col = 0; col < num_cols_k; ++col)
@@ -260,6 +270,46 @@ function random_int(min, max)
 			}
 		}
 	} // display_minefield
+
+	function game_over(game_state)
+	{
+		if(my_timer != undefined)
+			clearTimeout(my_timer);
+		let end_date = new Date();
+
+		for(let row = 0; row < num_rows_k; ++row)
+		{
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				if(state_closed == cur_state[row][col])
+				{
+					if(has_bombs[row][col])
+						new_state[row][col] = state_revealed_bomb;
+					else
+						new_state[row][col] = state_open;
+				} // state_closed
+				if(state_flagged_bomb == cur_state[row][col] && has_bombs[row][col])
+				{
+					new_state[row][col] = state_incorrect_bomb;
+				} // incorrectly flagged
+			} // for col
+		} // for row
+		display_minefield();
+
+		if(game_won == game_state)
+		{
+			remaining_obj.innerHTML = "You won in " + format_date_diff(end_date) + "!";
+		} // game won
+		else if(game_lost == game_state)
+		{
+			remaining_obj.innerHTML = "Sorry, you lost.";
+		} // game lost
+		else
+		{
+			remaining_obj.innerHTML = "I'm really sorry, but there's an internal error " +
+					"in my program; gate_state is " + game_state;
+		}
+	} // game_over
 
 	init();
 </script>
