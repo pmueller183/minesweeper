@@ -1,5 +1,28 @@
 ﻿<!DOCTYPE html>
 <html>
+<head>
+<script> "use strict";
+
+	/*
+	 Implement minesweeper
+
+	 variables used:
+		docobj -- const document object 
+		num_rows_k, num_cols_k -- number of rows and columns (10 each)
+		init_num_bombs_k -- number of bombs to start (not specified in problem statement)
+		state_* -- pseudo-enum containing all of the states a cell can have
+		images -- array using state_* as index giving the path to the images for each state
+		cells -- a matrix (num_rows_k by num_cols_k) giving hte img objects
+		cur_states, new_states -- matrix of current and new state values for each cell.
+			The plan is cur_states will be the values as seen by the user and the 
+			left and right click functions will update the new_states matrix.  The display
+			function will change the cells matrix as needed and update cur_states to new_states.
+	*/
+	const init_num_bombs_k = 10;
+
+</script>
+</head>
+
 <body>
 	<h1> minesweeper</h1>
 </body>
