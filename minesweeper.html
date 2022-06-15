@@ -31,6 +31,7 @@
 	const init_num_bombs_k = 10;
 	let num_remaining_bombs = init_num_bombs_k;
 	let remaining_obj = {};
+	let user_beg_date = undefined;
 
 	const state_one            =  1; // values for one through eight should match 
 	const state_two            =  2; // to make updating new_state a bit easier
@@ -71,16 +72,42 @@
 	const cur_state = [];
 	const new_state = [];
 
+	function format_date_diff()
+	{
+		let cur_date = new Date();
+		let diff_mlls = cur_date.getTime() - user_beg_date.getTime();
+		let diff_hours = Math.floor(diff_mlls / (60 * 60 * 1000));
+		diff_mlls -= (diff_hours * 60 * 60 * 1000);
+		let diff_mins = Math.floor(diff_mlls / (60 * 1000));
+		diff_mlls -= (diff_mins * 60 * 1000);
+		let diff_secs = Math.ceil(diff_mlls / 1000.0);
+		let scrstr = "";
+		if(diff_hours > 0)
+			scrstr += diff_hours.toString() + ":";
+		if(diff_mins > 0)
+			scrstr += diff_mins.toString() + ":";
+		if(diff_secs > 0)
+			scrstr += diff_secs.toString();
+		return scrstr;
+	} // format_date_diff
+
 	function display_c()
 	{
-		let refresh = 500; // Refresh rate in milli seconds
+		let refresh = 250; // Refresh rate in milli seconds
 		setTimeout('display_ct()',refresh);
 	} // display_c
 
 	function display_ct() 
 	{
-		let x = new Date();
-		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs + " " + x;
+		if(user_beg_date === undefined)
+		{
+			remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
+		} //undefined user_beg_date
+		else
+		{
+			remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs +
+					" elapsed time: " + format_date_diff();
+		}
 		display_c();
 	} // display_ct
 
@@ -119,6 +146,7 @@ function random_int(min, max)
 	{
 		if(!did_init_bomb)
 		{
+			user_beg_date = new Date();
 			make_bombs(row, col);
 			did_init_bomb = true;
 		} // !did_init_bomb
@@ -129,8 +157,15 @@ function random_int(min, max)
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func
+
 	function right_func(row, col) // called on right mouse click
 	{
+		if(!did_init_bomb)
+		{
+			user_beg_date = new Date();
+			make_bombs(row, col);
+			did_init_bomb = true;
+		} // !did_init_bomb
 		if(state_flagged_bomb != cur_state[row][col])
 			--num_remaining_bombs;
 		new_state[row][col] = state_flagged_bomb;
