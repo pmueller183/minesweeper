@@ -17,14 +17,14 @@
 		remaining_bombs == number of remaining unexploded bombs;
 		state_* -- pseudo-enum containing all of the states a cell can have
 		images -- array using state_* as index giving the path to the images for each state
-		cells -- a matrix (num_rows_k by num_cols_k) giving hte img objects.
+		minefield -- a matrix (num_rows_k by num_cols_k) giving hte img objects.
 		did_init_bomb -- I won't generate the bomb until after the user makes his first click
 			since there's nothing as irritating a hitting a bomb immediately.
 		has_bombs -- boolean matrix if a cell has a bomb or not.
 		cur_states, new_states -- matrix of current and new state values for each cell.
 			The plan is cur_states will be the values as seen by the user and the 
 			left and right click functions will update the new_states matrix.  The display
-			function will change the cells matrix as needed and update cur_states to new_states.
+			function will change the minefield matrix as needed and update cur_states to new_states.
 	*/
 	const docobj = document;
 	const num_rows_k = 10, num_cols_k = 10;
@@ -47,32 +47,70 @@
 	const state_exploded_bomb  = 14;
 
 	const images = [];
-	images[state_one] = "src\\one.png";
-	images[state_two] = "src\\two.png";
-	images[state_three] = "src\\three.png";
-	images[state_four] = "src\\four.png";
-	images[state_five] = "src\\five.png";
-	images[state_six] = "src\\six.png";
-	images[state_seven] = "src\\seven.png";
-	images[state_eight] = "src\\eight.png";
-	images[state_closed] = "src\\closed.png";
-	images[state_open] = "src\\open.png";
-	images[state_incorrect_bomb] = "src\\incorrect_bomb.png";
-	images[state_revealed_bomb] = "src\\revealed_bomb.png";
-	images[state_flagged_bomb] = "src\\flagged_bomb.png";
-	images[state_exploded_bomb] = "src\\exploded_bomb.png";
+	images[state_one] = "assets\\one.png";
+	images[state_two] = "assets\\two.png";
+	images[state_three] = "assets\\three.png";
+	images[state_four] = "assets\\four.png";
+	images[state_five] = "assets\\five.png";
+	images[state_six] = "assets\\six.png";
+	images[state_seven] = "assets\\seven.png";
+	images[state_eight] = "assets\\eight.png";
+	images[state_closed] = "assets\\closed.png";
+	images[state_open] = "assets\\open.png";
+	images[state_incorrect_bomb] = "assets\\incorrect_bomb.png";
+	images[state_revealed_bomb] = "assets\\revealed_bomb.png";
+	images[state_flagged_bomb] = "assets\\flagged_bomb.png";
+	images[state_exploded_bomb] = "assets\\exploded_bomb.png";
 
-	const cells = [];
+	const minefield = [];
 	let did_init_bomb = false;
 	const has_bombs = [];
 	const cur_states = [];
 	const new_states = [];
 
-	// now that all variable have been initialized, add a remaining bomb field
-	const remaining_obj = docobj.createElement("p");
-	remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
-	docobj.body.appendChild(remaining_obj);
+	function init() // called once
+	{
+		// the remaining bombs display
 
+		const remaining_obj = docobj.createElement("p");
+		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
+		docobj.body.appendChild(remaining_obj);
+
+		// the minefield:
+
+		// top and left of the minefield (pixels)
+		// cell_size_k is the size of a cell
+		// ideally these would be based on the browser size, but for now just hard-code them
+		const top_pixel_k = 110;
+		const left_pixel_k = 100;
+		const cell_size_k = 30;
+
+		let cur_top = top_pixel_k;
+		for(let row=0; row < num_rows_k; ++row)
+		{
+			const mine_row = [];
+			let cur_left = left_pixel_k;
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				let imgname = `a${row}{col}`;
+				let img = docobj.createElement("img");
+				img.name = imgname;
+				img.style.display = 'inline';
+				img.style.position = 'absolute';
+				img.style.top = `${cur_top}px`;
+				img.style.left = `${cur_left}px`;
+				img.style.width = `${cell_size_k}px`;
+				img.src = images[state_closed];
+				docobj.body.appendChild(img);
+				mine_row.push(img);
+				cur_left += cell_size_k;
+			} // for col
+			minefield.push(mine_row);
+			cur_top += cell_size_k;
+		} // for row
+	} // init()
+
+	init();
 </script>
 </body>
 </html>
