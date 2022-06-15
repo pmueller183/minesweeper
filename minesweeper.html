@@ -124,6 +124,11 @@
 		return Math.floor(Math.random() * (max - min) ) + min;
 	} // get_random_int
 
+	function count_bombs(row, col)
+	{
+		return 1;
+	} // count_bombs
+
 	function make_bombs(excluded_row, excluded_col)
 	{
 		for(let row = 0; row < num_rows_k; ++row)
@@ -150,6 +155,45 @@
 		} // while num_needed;
 	} // make_bombs
 
+	// This function counts the number of adjacent bombs and set its state.
+	// If the number is 0, it then calls itself of each neighbor.
+	// the has_visited argument is a boolean matrix to ensure a stop
+	function visit(has_visited, row, col)
+	{
+		// check for out of bounds here so we only have to do it once
+		if(row < 0 || row >= num_rows_k || col < 0 || col >= num_cols_k)
+			return;
+
+		if(has_visited[row][col])
+			return;
+
+		has_visited[row][col] = true;
+
+		let num_bombs_nearby = count_bombs(row, col);
+
+		if(num_bombs_nearby > 0)
+		{
+			new_state[row][col] = num_bombs_nearby;
+		}
+		else
+		{
+			new_state[row][col] = state_open;
+
+			// visit neighbors
+			visit(has_visited, row - 1, col - 1);
+			visit(has_visited, row - 1, col    );
+			visit(has_visited, row - 1, col + 1);
+
+			visit(has_visited, row    , col + 1);
+			visit(has_visited, row    , col - 1);
+
+			visit(has_visited, row + 1, col - 1);
+			visit(has_visited, row + 1, col    );
+			visit(has_visited, row + 1, col + 1);
+		} // else 0 bombs nearby
+
+	} // visit
+
 	function left_func(row, col) // called on left mouse click
 	{
 		if(!did_init_bomb)
@@ -159,7 +203,8 @@
 			did_init_bomb = true;
 		} // !did_init_bomb
 
-		if(state_flagged_bomb == cur_state[row][col])
+		if(state_flagged_bomb == cur_state[row][col] ||
+		   state_open         == cur_state[row][col]  )
 		{
 			// do nothing
 			return false;
@@ -171,8 +216,22 @@
 			return false;
 		}
 
-		//
-		new_state[row][col] = state_open;
+		// now the hard part
+		// walk through minefield looking for open squares
+
+		// create has_visited boolean matrix so we our recursive has a stopping condition
+		const has_visited = [];
+		for(let row = 0; row < num_rows_k; ++row)
+		{
+			const row_visited = [];
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				row_visited.push(false);
+			} // for col
+			has_visited.push(row_visited);
+		} // for row
+
+		visit(has_visited, row, col);
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func
