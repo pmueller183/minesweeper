@@ -130,7 +130,7 @@
   <ItemGroup>
     <None Include="minesweeper.html" />
     <None Include="README.md" />
-    <None Include="Tritech Interview Exercise - Minesweeper.pdf" />
+    <None Include="Tritech Interview Exercise.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="assets\closed.png" />

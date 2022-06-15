@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="README.md" />
     <None Include="minesweeper.html" />
-    <None Include="Tritech Interview Exercise - Minesweeper.pdf" />
+    <None Include="Tritech Interview Exercise.pdf" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="assets">
