@@ -70,12 +70,12 @@
 
 	function left_func(row, col) // called on left mouse click
 	{
-		alert(`clicked cell (${row}, ${col})`);
+		minefield[row][col].src = images[state_revealed_bomb];
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func
 	function right_func(row, col) // called on right mouse click
 	{
-		alert(`right clicked cell (${row}, ${col})`);
+		minefield[row][col].src = images[state_flagged_bomb];
 		return false; // prevent the context menu from appearing
 	} // right_func
 
