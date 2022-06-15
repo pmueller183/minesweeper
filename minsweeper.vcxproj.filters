@@ -53,5 +53,8 @@
     <Image Include="assets\two.png">
       <Filter>assets</Filter>
     </Image>
+    <Image Include="assets\shadow_bomb.png">
+      <Filter>assets</Filter>
+    </Image>
   </ItemGroup>
 </Project>

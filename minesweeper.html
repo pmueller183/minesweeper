@@ -46,6 +46,7 @@
 	const state_revealed_bomb  = 12;
 	const state_flagged_bomb   = 13;
 	const state_exploded_bomb  = 14;
+	const state_shadow_bomb    = 15;
 
 	const images = [];
 	images[state_one] = "assets\\one.png";
@@ -62,6 +63,7 @@
 	images[state_revealed_bomb] = "assets\\revealed_bomb.png";
 	images[state_flagged_bomb] = "assets\\flagged_bomb.png";
 	images[state_exploded_bomb] = "assets\\exploded_bomb.png";
+	images[state_shadow_bomb] = "assets\\shadow_bomb.png";
 
 	const minefield = [];
 	let did_init_bomb = false;
@@ -69,11 +71,48 @@
 	const cur_state = [];
 	const new_state = [];
 
+	function random_int(min, max) 
+	{
+		return Math.floor(Math.random() * (max - min) ) + min;
+	} // get_random_int
+
+	function make_bombs(excluded_row, excluded_col)
+	{
+		for(let row = 0; row < num_rows_k; ++row)
+		{
+			const bomb_row = [];
+			for(let col = 0; col < num_cols_k; ++col)
+			{
+				bomb_row.push(false);
+			} // for col
+			has_bombs.push(bomb_row);
+		} // for row
+
+		let num_needed = init_num_bombs_k;
+		while(num_needed > 0)
+		{
+			let row = random_int(0, num_rows_k);
+			let col = random_int(0, num_cols_k);
+			if(row != excluded_row && col != excluded_col && !has_bombs[row][col])
+			{
+				has_bombs[row][col] = true;
+				new_state[row][col] = state_shadow_bomb; // DEBUGBACKUP -- comment out for release
+				--num_needed;
+			} // row, col valid
+		} // while num_needed;
+	} // make_bombs
+
 	function left_func(row, col) // called on left mouse click
 	{
+		if(!did_init_bomb)
+		{
+			make_bombs(row, col);
+			did_init_bomb = true;
+		} // !did_init_bomb
+
 		if(state_flagged_bomb == cur_state[row][col])
 			++num_remaining_bombs;
-		new_state[row][col] = state_revealed_bomb;
+		new_state[row][col] = state_open;
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func

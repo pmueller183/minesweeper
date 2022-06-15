@@ -144,6 +144,7 @@
     <Image Include="assets\open.png" />
     <Image Include="assets\revealed_bomb.png" />
     <Image Include="assets\seven.png" />
+    <Image Include="assets\shadow_bomb.png" />
     <Image Include="assets\six.png" />
     <Image Include="assets\three.png" />
     <Image Include="assets\two.png" />
