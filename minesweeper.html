@@ -71,7 +71,20 @@
 	const cur_state = [];
 	const new_state = [];
 
-	function random_int(min, max) 
+	function display_c()
+	{
+		let refresh = 500; // Refresh rate in milli seconds
+		setTimeout('display_ct()',refresh);
+	} // display_c
+
+	function display_ct() 
+	{
+		let x = new Date();
+		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs + " " + x;
+		display_c();
+	} // display_ct
+
+function random_int(min, max) 
 	{
 		return Math.floor(Math.random() * (max - min) ) + min;
 	} // get_random_int
@@ -131,6 +144,7 @@
 
 		remaining_obj = docobj.createElement("p");
 		docobj.body.appendChild(remaining_obj);
+		display_c();
 
 		// the minefield:
 
@@ -187,7 +201,7 @@
 
 	function display_minefield()
 	{
-		remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
+		//remaining_obj.innerHTML = "Bombs remaining: " + num_remaining_bombs;
 		for(let row=0; row < num_rows_k; ++row)
 		{
 			for(let col = 0; col < num_cols_k; ++col)
