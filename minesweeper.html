@@ -152,7 +152,10 @@ function random_int(min, max)
 		} // !did_init_bomb
 
 		if(state_flagged_bomb == cur_state[row][col])
-			++num_remaining_bombs;
+		{
+			// do nothing
+			return false;
+		}
 		new_state[row][col] = state_open;
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
@@ -166,9 +169,17 @@ function random_int(min, max)
 			make_bombs(row, col);
 			did_init_bomb = true;
 		} // !did_init_bomb
+
 		if(state_flagged_bomb != cur_state[row][col])
+		{
 			--num_remaining_bombs;
-		new_state[row][col] = state_flagged_bomb;
+			new_state[row][col] = state_flagged_bomb;
+		}
+		else
+		{
+			++num_remaining_bombs;
+			new_state[row][col] = state_closed;
+		}
 		display_minefield();
 		return false; // prevent the context menu from appearing
 	} // right_func
