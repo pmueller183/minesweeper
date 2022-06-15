@@ -52,8 +52,9 @@
 	const state_shadow_bomb    = 15;
 
 	// game over states:
-	const game_lost = 1;
-	const game_won  = 2;
+	const game_lost        = 1;
+	const game_won         = 2;
+	const game_in_progress = 3;
 
 	const images = [];
 	images[state_one] = "assets\\one.png";
@@ -144,24 +145,51 @@
 			if(row != excluded_row && col != excluded_col && !has_bombs[row][col])
 			{
 				has_bombs[row][col] = true;
-				new_state[row][col] = state_shadow_bomb; // DEBUGBACKUP -- comment out for release
+				// DEBUGBACKUP -- comment out the following line for release
+				//new_state[row][col] = state_shadow_bomb;
 				--num_needed;
 			} // row, col valid
 		} // while num_needed;
 	} // make_bombs
 
+	 // return game_won or game_in_progress
+	 // game_lost is determined in left_click
+	 function determine_if_win()
+	{
+		let game_state = game_won;
+		for(let row = 0; game_state != game_in_progress && row < num_rows_k; ++row)
+		{
+			for(let col = 0; game_state != game_in_progress && col < num_cols_k; ++col)
+			{
+				const w_new_state = new_state[row][col];
+				if(w_new_state == state_closed)
+					game_state = game_in_progress;
+				if(w_new_state == state_flagged_bomb && ! has_bombs[row][col])
+					game_state = game_in_progress;
+				// if a state is open and has a bomb it will never get here;
+			}
+		} // for row
+
+		if(game_won == game_state)
+		{
+			display_minefield();
+		}
+		return game_state;
+	} // determine_if_win
+
+	// count the bombs near the row, col
 	function count_bombs_nearby(row, col)
 	{
 		let num_bombs = 0;
 		for(let ii = row - 1; ii <= row + 1; ++ii)
 		{
-			if(ii < 0 || ii >= num_rows_k)
+			if(ii < 0 || ii >= num_rows_k) // skip if outside the matrix
 				continue;
 			for(let jj = col - 1; jj <= col + 1; ++jj)
 			{
-				if(jj < 0 || jj >= num_cols_k)
+				if(jj < 0 || jj >= num_cols_k) // skip if outside the matrix
 					continue;
-				if(row == ii && col == jj)
+				if(row == ii && col == jj) // skip if self
 					continue;
 				if(has_bombs[ii][jj])
 					++num_bombs;
@@ -171,7 +199,7 @@
 	} // count_bombs_nearby
 
 	// This function counts the number of adjacent bombs and set its state.
-	// If the number is 0, it then calls itself of each neighbor.
+	// If the number is 0, it then calls itself on each neighbor.
 	// the has_visited argument is a boolean matrix to ensure a stop
 	function visit(has_visited, row, col)
 	{
@@ -179,9 +207,9 @@
 		if(row < 0 || row >= num_rows_k || col < 0 || col >= num_cols_k)
 			return;
 
+		// don't do anything if we've already been here
 		if(has_visited[row][col])
 			return;
-
 		has_visited[row][col] = true;
 
 		let num_bombs_nearby = count_bombs_nearby(row, col);
@@ -246,7 +274,12 @@
 		} // for row
 
 		visit(has_visited, row, col);
-		display_minefield();
+
+		let game_state = determine_if_win();
+		if(game_in_progress == game_state)
+			display_minefield();
+		else
+			game_over(game_state);
 		return false; // not really needed, but kept for parallelism with right_func
 	} // left_func
 
@@ -269,7 +302,11 @@
 			++num_remaining_bombs;
 			new_state[row][col] = state_closed;
 		}
-		display_minefield();
+		let game_state = determine_if_win();
+		if(game_in_progress == game_state)
+			display_minefield();
+		else
+			game_over(game_state);
 		return false; // prevent the context menu from appearing
 	} // right_func
 
@@ -366,7 +403,7 @@
 					else
 						new_state[row][col] = state_open;
 				} // state_closed
-				if(state_flagged_bomb == cur_state[row][col] && has_bombs[row][col])
+				if(state_flagged_bomb == cur_state[row][col] && !has_bombs[row][col])
 				{
 					new_state[row][col] = state_incorrect_bomb;
 				} // incorrectly flagged
