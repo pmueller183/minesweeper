@@ -68,6 +68,17 @@
 	const cur_states = [];
 	const new_states = [];
 
+	function left_func(row, col) // called on left mouse click
+	{
+		alert(`clicked cell (${row}, ${col})`);
+		return false; // not really needed, but kept for parallelism with right_func
+	} // left_func
+	function right_func(row, col) // called on right mouse click
+	{
+		alert(`right clicked cell (${row}, ${col})`);
+		return false; // prevent the context menu from appearing
+	} // right_func
+
 	function init() // called once
 	{
 		// the remaining bombs display
@@ -101,6 +112,8 @@
 				img.style.left = `${cur_left}px`;
 				img.style.width = `${cell_size_k}px`;
 				img.src = images[state_closed];
+				img.onclick = function() { return left_func(row, col); };
+				img.oncontextmenu = function() { return right_func(row, col);};
 				docobj.body.appendChild(img);
 				mine_row.push(img);
 				cur_left += cell_size_k;
