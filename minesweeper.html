@@ -13,8 +13,8 @@
 	 variables used:
 		docobj -- const document object 
 		num_rows_k, num_cols_k -- number of rows and columns (10 each)
-		init_num_bombs_k -- number of bombs to start (not specified in problem statement)
-		remaining_bombs == number of remaining unexploded bombs;
+		init_num_bombs_k -- number of bombs to start (specified as 10)
+		remaining_bombs -- number of remaining unexploded bombs;
 		state_* -- pseudo-enum containing all of the states a cell can have
 		images -- array using state_* as index giving the path to the images for each state
 		minefield -- a matrix (num_rows_k by num_cols_k) giving hte img objects.
@@ -32,7 +32,8 @@
 	let num_remaining_bombs = init_num_bombs_k;
 	let remaining_obj = {};
 	let user_beg_date = undefined;
-	let my_timer = undefined;
+	let my_timer = undefined; // timer to show remaining bombs and elapsed time
+	                          // needs to be cancelled at game over
 
 	const state_one            =  1; // values for one through eight should match 
 	const state_two            =  2; // to make updating new_state a bit easier
@@ -94,6 +95,9 @@
 			scrstr += diff_secs.toString();
 		return scrstr;
 	} // format_date_diff
+
+	// these two functions display the remaining number of bombs and the elapsed
+	// time.  
 
 	function display_c()
 	{
@@ -167,6 +171,7 @@
 			return false;
 		}
 
+		//
 		new_state[row][col] = state_open;
 		display_minefield();
 		return false; // not really needed, but kept for parallelism with right_func
@@ -306,8 +311,9 @@
 		} // game lost
 		else
 		{
-			remaining_obj.innerHTML = "I'm really sorry, but there's an internal error " +
-					"in my program; gate_state is " + game_state;
+			remaining_obj.innerHTML = `I'm really sorry, but there's an internal error
+					in my program; gate_state is ${game_state} but it should be either
+					${game_won} or ${game_lost}`;
 		}
 	} // game_over
 
