@@ -124,11 +124,6 @@
 		return Math.floor(Math.random() * (max - min) ) + min;
 	} // get_random_int
 
-	function count_bombs(row, col)
-	{
-		return 1;
-	} // count_bombs
-
 	function make_bombs(excluded_row, excluded_col)
 	{
 		for(let row = 0; row < num_rows_k; ++row)
@@ -155,6 +150,26 @@
 		} // while num_needed;
 	} // make_bombs
 
+	function count_bombs_nearby(row, col)
+	{
+		let num_bombs = 0;
+		for(let ii = row - 1; ii <= row + 1; ++ii)
+		{
+			if(ii < 0 || ii >= num_rows_k)
+				continue;
+			for(let jj = col - 1; jj <= col + 1; ++jj)
+			{
+				if(jj < 0 || jj >= num_cols_k)
+					continue;
+				if(row == ii && col == jj)
+					continue;
+				if(has_bombs[ii][jj])
+					++num_bombs;
+			} // for jj
+		} // for ii
+		return num_bombs;
+	} // count_bombs_nearby
+
 	// This function counts the number of adjacent bombs and set its state.
 	// If the number is 0, it then calls itself of each neighbor.
 	// the has_visited argument is a boolean matrix to ensure a stop
@@ -169,7 +184,7 @@
 
 		has_visited[row][col] = true;
 
-		let num_bombs_nearby = count_bombs(row, col);
+		let num_bombs_nearby = count_bombs_nearby(row, col);
 
 		if(num_bombs_nearby > 0)
 		{
@@ -180,16 +195,15 @@
 			new_state[row][col] = state_open;
 
 			// visit neighbors
-			visit(has_visited, row - 1, col - 1);
-			visit(has_visited, row - 1, col    );
-			visit(has_visited, row - 1, col + 1);
-
-			visit(has_visited, row    , col + 1);
-			visit(has_visited, row    , col - 1);
-
-			visit(has_visited, row + 1, col - 1);
-			visit(has_visited, row + 1, col    );
-			visit(has_visited, row + 1, col + 1);
+			for(let ii = row - 1; ii <= row + 1; ++ii)
+			{
+				for(let jj = col - 1; jj <= col + 1; ++jj)
+				{
+					// doesn't matter if I visit myself because I already
+					// set has_visited myself to true
+					visit(has_visited, ii, jj);
+				} // for jj
+			} // for ii
 		} // else 0 bombs nearby
 
 	} // visit
