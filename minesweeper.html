@@ -8,6 +8,34 @@
 <script> "use strict";
 
 	/*
+	 Possible improvments:
+		After bundling the project, I thought of some ways to improve it.
+
+		First of all, there's a stright-up bug.  When left-clicking on a bomb,
+		it correctly ends the game as a loss, but it does not show the exploded_bomb
+		in the cell.  It shows an unexploded bomb.
+
+		I think this is caused by left_func() trying to do to much.  It sets the 
+		new_state matrix, checks for game lost, and display.  It should just set
+		the new_state matrix, and pass the rest off to determine_if_win() (which should
+		be renamed to check_game_state()).  check_game_state() will determine which of
+		the three states the game is in.  It will then call either game_over() o
+		display_minfield()
+
+		Both left_func() and right_func() begin with several identical lines to initialze
+		the has_bomb matrix and other stuff.  That should be moved to its own function.
+
+		make_new_bombs() does a test-and-reject algorithm for placing the bombs everywhere but
+		the initial click.  This works fine for 10 out of 99 bombs, but it might have
+		problems for a larger number, like 90 out of 99.  A negative feedback algorithm might
+		be better.
+
+		I hard-coded the cell sizes and positions – I would like to base them on the browser
+		dimensions.  The timer function could be a little clearer and the elapsed time
+		string is a bit cryptic.  I would also like to add some comments and
+		do some refactoring.
+	 */
+	/*
 	 Implement minesweeper
 
 	 variables used:
