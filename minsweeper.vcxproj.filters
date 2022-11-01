@@ -4,6 +4,7 @@
     <None Include="README.md" />
     <None Include="minesweeper.html" />
     <None Include="Tritech Interview Exercise.pdf" />
+    <None Include="LICENSE.md" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="assets">

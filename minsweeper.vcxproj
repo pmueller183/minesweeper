@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="LICENSE.md" />
     <None Include="minesweeper.html" />
     <None Include="README.md" />
     <None Include="Tritech Interview Exercise.pdf" />
